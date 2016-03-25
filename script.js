@@ -2,10 +2,14 @@ module.exports.loop = function () {
     
     var Worker = [MOVE, WORK, CARRY];
     var workerCount = 0;
-    var workerLimit = 1;
+    var workerLimit = 2;
     var masterCount = 0;
-    var masterLimit = 2;
+    var masterLimit = 5;
+    var builderCount = 0;
+    var builderLimit = 1;
     var Ranger = [MOVE, RANGED_ATTACK, HEAL];
+    var rangerCount = 0;
+    var rangerLimit = 1;
     var Guard = [MOVE, ATTACK, HEAL];
     var Scout = [MOVE, CLAIM, HEAL];
     var scoutCount = 0;
@@ -33,27 +37,51 @@ module.exports.loop = function () {
 	for(var i in Game.creeps)
 	{
 	    var creep = Game.creeps[i];
-	    var target = Game.spawns.Spawn1;
+	    var spawn = Game.spawns.Spawn1;
+	    var noRoomInSpawn = spawn.energy == spawn.energyCapacity;
 	    if( ((creep.body == worker) || creep.name.startsWith('Worker')) )
 	    {
 	        workerCount++;
 	        var worker = creep;
 	        var source = worker.pos.findClosestByRange(FIND_SOURCES);
-	        var noRoomInSpawn = Game.spawns.Spawn1.energy == Game.spawns.Spawn1.energyCapacity;
     	    if (worker.carry[RESOURCE_ENERGY] < worker.carryCapacity)
     	    {
     	        if (worker.pos.isNearTo(source)) worker.harvest(source)
     	        else worker.moveTo(source);
     	    } else if (worker.carry.energy === worker.carryCapacity && !noRoomInSpawn)
     	    {
-    	        if (worker.pos.isNearTo(target)) worker.transfer(target, RESOURCE_ENERGY)
-    	        else worker.moveTo(target);
+    	        if (worker.pos.isNearTo(spawn)) worker.transfer(spawn, RESOURCE_ENERGY)
+    	        else worker.moveTo(spawn);
     	    }
 	       if(noRoomInSpawn && worker.carry.energy > 0)
 	       {
 	           var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 	           if(worker.pos.isNearTo(target)) worker.build(target)
 	           else worker.moveTo(target);
+	       }
+	       
+	    }
+	    else
+	    if(creep.name.startsWith('Builder') )
+	    {
+	       builderCount++;
+	       var builder = creep;if (builder.carry[RESOURCE_ENERGY] < builder.carryCapacity)
+    	    {
+    	        if (builder.pos.isNearTo(source)) builder.harvest(source)
+    	        else builder.moveTo(source);
+    	    }
+	       if(noRoomInSpawn && builder.carry.energy > 0)
+	       {
+	           var target = builder.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+	           if(builder.pos.isNearTo(target)) builder.build(target)
+	           else builder.moveTo(target);
+	       }
+	       if(noRoomInSpawn && builder.carry.energy > 0)
+	       {
+	           var target = builder.pos.findClosestByRange(FIND_STRUCTURES,
+	           {filter: function() {return object.hits < object.hitsMax}});
+	           if(builder.pos.isNearTo(target)) builder.repair(target)
+	           else builder.moveTo(target);
 	       }
 	       
 	    }
@@ -93,6 +121,11 @@ module.exports.loop = function () {
     {
         var worker = Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
         console.log(worker.name + " is created");
+    }
+    if (builderCount < builderLimit )
+    {
+        var builder = Game.spawns.Spawn1.createCreep(Worker, 'Builder ' + getRandomName());
+        console.log(builder.name + " is created");
     }
     if (masterCount < masterLimit )
     {
