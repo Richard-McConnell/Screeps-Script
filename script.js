@@ -1,4 +1,5 @@
 module.exports.loop = function () {
+    
     var Worker = [MOVE, WORK, CARRY];
     var workerCount = 0;
     var workerLimit = 1;
@@ -32,27 +33,23 @@ module.exports.loop = function () {
 	for(var i in Game.creeps)
 	{
 	    var creep = Game.creeps[i];
+	    var target = Game.spawns.Spawn1;
 	    if( ((creep.body == worker) || creep.name.startsWith('Worker')) )
 	    {
 	        workerCount++;
 	        var worker = creep;
 	        var source = worker.pos.findClosestByRange(FIND_SOURCES);
-	        if (worker.carry[RESOURCE_ENERGY] < 50)
-	            worker.moveTo(source); 
-	        if ( worker.carry[RESOURCE_ENERGY] < 50 && worker.pos.isNearTo(source))
-	            worker.harvest(source);
-	                //creep.harvest(source) === NOT_IN_RANGE )
-	            //creep.moveTo(source);
-	       if (!worker.pos.isNearTo(Game.spawns.Spawn1) &&
-	            worker.carry[RESOURCE_ENERGY] === 50)
-	       {
-	           worker.moveTo(Game.spawns.Spawn1);
-	       }
-	       if (worker.pos.isNearTo(Game.spawns.Spawn1) && 
-	           worker.carry[RESOURCE_ENERGY] === 50)
-	        worker.transfer(Game.spawns.Spawn1, RESOURCE_ENERGY);
-	       
-	       if(Game.spawns.Spawn1.energy === Game.spawns.energyCapacity)
+	        var noRoomInSpawn = Game.spawns.Spawn1.energy == Game.spawns.Spawn1.energyCapacity;
+    	    if (worker.carry[RESOURCE_ENERGY] < worker.carryCapacity)
+    	    {
+    	        if (worker.pos.isNearTo(source)) worker.harvest(source)
+    	        else worker.moveTo(source);
+    	    } else if (worker.carry.energy === worker.carryCapacity && !noRoomInSpawn)
+    	    {
+    	        if (worker.pos.isNearTo(target)) worker.transfer(target, RESOURCE_ENERGY)
+    	        else worker.moveTo(target);
+    	    }
+	       if(noRoomInSpawn && worker.carry.energy > 0)
 	       {
 	           var target = worker.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 	           if(worker.pos.isNearTo(target)) worker.build(target)
@@ -79,14 +76,7 @@ module.exports.loop = function () {
 	            master.moveTo(source); 
 	       if ( master.carry[RESOURCE_ENERGY] < 50 && master.pos.isNearTo(source))
 	            master.harvest(source);
-	                //creep.harvest(source) === NOT_IN_RANGE )
-	            //creep.moveTo(source);
 	    }
-	}
-	
-	if(Game.spawns.Spawn1.energy < 10)
-	{
-	    console.log('Spawn1 will be soon out of energy');
 	}
 	
 	function getRandomName()
@@ -101,7 +91,8 @@ module.exports.loop = function () {
 	
     if (workerCount < workerLimit )
     {
-        Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
+        var worker = Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
+        console.log(worker.name + " is created");
     }
     if (masterCount < masterLimit )
     {
