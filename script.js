@@ -67,18 +67,25 @@ module.exports.loop = function () {
 	    if(creep.name.startsWith('Builder') )
 	    {
 	       builderCount++;
-	       var builder = creep;if (builder.carry[RESOURCE_ENERGY] < builder.carryCapacity)
+	       var builder = creep;
+	       if (builder.carry[RESOURCE_ENERGY] < builder.carryCapacity)
     	    {
     	        if (builder.pos.isNearTo(source)) builder.harvest(source)
     	        else builder.moveTo(source);
+    	    } else if (builder.carry.energy === builder.carryCapacity && !noRoomInSpawn)
+    	    {
+    	        if (builder.pos.isNearTo(spawn)) builder.transfer(spawn, RESOURCE_ENERGY)
+    	        else builder.moveTo(spawn);
     	    }
+    	    var builderIsBusy = false;
 	       if(noRoomInSpawn && builder.carry.energy > 0)
 	       {
 	           var target = builder.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-	           if(builder.pos.isNearTo(target)) builder.build(target)
+	           if(builder.pos.isNearTo(target)) 
+	           {builder.build(target); builderIsBusy = true;}
 	           else builder.moveTo(target);
 	       }
-	       if(noRoomInSpawn && builder.carry.energy > 0)
+	       if(!builderIsBusy && noRoomInSpawn && builder.carry.energy > 0)
 	       {
 	           var target = builder.pos.findClosestByRange(FIND_STRUCTURES,
 	           {filter: function() {return object.hits < object.hitsMax}});
