@@ -33,6 +33,17 @@ module.exports.loop = function () {
         console.log("Used half of CPU");
     }
     
+    var needRepair;
+    for (var index in Game.structures)
+    {
+        var structure = Game.structures[index];
+        if (structure.hits < structure.hitsMax)
+        {
+            needRepair = structure;
+            break;
+        }
+    }    
+    
     // Game.spawns.Spawn1.createCreep([WORK, CARRY, MOVE], 'Worker');
 	// Your code goes here
 	// var source;
@@ -87,10 +98,10 @@ module.exports.loop = function () {
 	       }
 	       if(!builderIsBusy && noRoomInSpawn && builder.carry.energy > 0)
 	       {
-	           var target = builder.pos.findClosestByRange(FIND_STRUCTURES,
-	           {filter: function() {return object.hits < object.hitsMax}});
-	           if(builder.pos.isNearTo(target)) builder.repair(target)
-	           else builder.moveTo(target);
+	           /*var target = builder.pos.findClosestByRange(FIND_STRUCTURES,
+	           {filter: function() {return object.hits < object.hitsMax}});*/
+	           if(builder.pos.isNearTo(needRepair)) builder.repair(needRepair)
+	           else builder.moveTo(needRepair);
 	       }
 	       
 	    }
