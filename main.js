@@ -4,16 +4,16 @@ module.exports.loop = function () {
     var Builder = [WORK, WORK, MOVE, CARRY];
     var Master = [WORK, CARRY, CARRY, MOVE];
     var limits = {worker: 1, master: 3, 
-                builder: 1};
+                builder: 1, ranger: 1,
+                scout: 1, guard: 1,
+                healer: 1, superguard: 1};
     var counters = {worker: 0, master: 0, 
-                builder: 0};
+                builder: 0, ranger: 0,
+                scout: 0, guard: 0,
+                healer: 0, superguard: 0};
     var Ranger = [MOVE, RANGED_ATTACK, RANGED_ATTACK, HEAL];
-    var rangerCount = 0;
-    var rangerLimit = 1;
     var Guard = [MOVE, ATTACK, ATTACK, HEAL];
     var Scout = [MOVE, MOVE, CLAIM, HEAL];
-    var scoutCount = 0;
-    var scoutLimit = 1;
     var Healer = [MOVE, HEAL, HEAL, CLAIM];
     var Superguard = [MOVE, ATTACK, ATTACK, RANGED_ATTACK];
     
@@ -145,7 +145,7 @@ module.exports.loop = function () {
     {
         Game.spawns.Spawn1.createCreep(Master, 'Master ' + getRandomName());
     }
-    else if (counter.builder < limits.builder )
+    else if (counters.builder < limits.builder )
     {
         Game.spawns.Spawn1.createCreep(Builder, 'Builder ' + getRandomName());
     }
