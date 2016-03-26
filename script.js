@@ -2,9 +2,9 @@ module.exports.loop = function () {
     
     var Worker = [MOVE, WORK, CARRY];
     var workerCount = 0;
-    var workerLimit = 2;
+    var workerLimit = 1;
     var masterCount = 0;
-    var masterLimit = 5;
+    var masterLimit = 3;
     var builderCount = 0;
     var builderLimit = 1;
     var Ranger = [MOVE, RANGED_ATTACK, HEAL];
