@@ -17,6 +17,8 @@ module.exports.loop = function () {
     var Healer = [MOVE, HEAL, CLAIM];
     var Superguard = [MOVE, ATTACK, RANGED_ATTACK];
     
+    var buildingAUnit = false;
+    
     var secretName = undefined;
     
     var NOT_IN_RANGE = ERR_NOT_IN_RANGE;
@@ -117,17 +119,16 @@ module.exports.loop = function () {
 	   " " + lastNames[Math.round(Math.random(lastNames.length))];
 	}
 	
-    if (workerCount < workerLimit )
+    if (!buildingAUnit && workerCount < workerLimit)
     {
         var worker = Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
-        console.log(worker.name + " is created");
+        buildingAUnit = true;
     }
-    if (builderCount < builderLimit )
+    if (!buildingAUnit && builderCount < builderLimit )
     {
         var builder = Game.spawns.Spawn1.createCreep(Worker, 'Builder ' + getRandomName());
-        console.log(builder.name + " is created");
     }
-    if (masterCount < masterLimit )
+    if (!buildingAUnit && masterCount < masterLimit )
     {
         Game.spawns.Spawn1.createCreep(Worker, 'Master ' + getRandomName());
     }
