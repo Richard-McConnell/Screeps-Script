@@ -1,5 +1,5 @@
 module.exports.loop = function () {
-    
+    // in free mode CPU limit should be maximum 20
     var Worker = [WORK, WORK, CARRY, MOVE];
     var Builder = [WORK, WORK, MOVE, CARRY];
     var Master = [WORK, CARRY, CARRY, MOVE];
