@@ -3,21 +3,19 @@ module.exports.loop = function () {
     var Worker = [WORK, WORK, CARRY, MOVE];
     var Builder = [WORK, WORK, MOVE, CARRY];
     var Master = [WORK, CARRY, CARRY, MOVE];
-    var workerCount = 0;
-    var workerLimit = 1;
-    var masterCount = 0;
-    var masterLimit = 3;
-    var builderCount = 0;
-    var builderLimit = 1;
-    var Ranger = [MOVE, RANGED_ATTACK, HEAL];
+    var limits = {worker: 1, master: 3, 
+                builder: 1};
+    var counters = {worker: 0, master: 0, 
+                builder: 0};
+    var Ranger = [MOVE, RANGED_ATTACK, RANGED_ATTACK, HEAL];
     var rangerCount = 0;
     var rangerLimit = 1;
-    var Guard = [MOVE, ATTACK, HEAL];
-    var Scout = [MOVE, CLAIM, HEAL];
+    var Guard = [MOVE, ATTACK, ATTACK, HEAL];
+    var Scout = [MOVE, MOVE, CLAIM, HEAL];
     var scoutCount = 0;
     var scoutLimit = 1;
-    var Healer = [MOVE, HEAL, CLAIM];
-    var Superguard = [MOVE, ATTACK, RANGED_ATTACK];
+    var Healer = [MOVE, HEAL, HEAL, CLAIM];
+    var Superguard = [MOVE, ATTACK, ATTACK, RANGED_ATTACK];
     
     var buildingAUnit = false;
     
@@ -56,7 +54,7 @@ module.exports.loop = function () {
 	    var noRoomInSpawn = spawn.energy == spawn.energyCapacity;
 	    if( ((creep.body == worker) || creep.name.startsWith('Worker')) )
 	    {
-	        workerCount++;
+	        counters.worker++;
 	        var worker = creep;
 	        var source = worker.pos.findClosestByRange(FIND_SOURCES);
     	    if (worker.carry[RESOURCE_ENERGY] < worker.carryCapacity)
@@ -79,7 +77,7 @@ module.exports.loop = function () {
 	    else
 	    if(creep.name.startsWith('Builder') )
 	    {
-	       builderCount++;
+	       counters.builder++;
 	       var builder = creep;
 	       if (builder.carry[RESOURCE_ENERGY] < builder.carryCapacity)
     	    {
@@ -110,7 +108,7 @@ module.exports.loop = function () {
 	    else
 	    if((creep.body == worker) || creep.name.startsWith('Master') )
 	    {
-	        masterCount++;
+	        counters.master++;
 	        var master = creep;
 	        var source = master.pos.findClosestByRange(FIND_SOURCES);
 	       var target = master.room.controller;
@@ -139,18 +137,17 @@ module.exports.loop = function () {
 	   " " + lastNames[Math.round(Math.random(lastNames.length))];
 	}
 	
-    if (!buildingAUnit && workerCount < workerLimit)
+    if (counters.worker < limits.worker)
     {
-        var worker = Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
-        buildingAUnit = true;
+        Game.spawns.Spawn1.createCreep(Worker, 'Worker ' + getRandomName());
     }
-    if (!buildingAUnit && builderCount < builderLimit )
-    {
-        var builder = Game.spawns.Spawn1.createCreep(Builder, 'Builder ' + getRandomName());
-    }
-    if (!buildingAUnit && masterCount < masterLimit )
+    else if (counters.master < limits.master )
     {
         Game.spawns.Spawn1.createCreep(Master, 'Master ' + getRandomName());
+    }
+    else if (counter.builder < limits.builder )
+    {
+        Game.spawns.Spawn1.createCreep(Builder, 'Builder ' + getRandomName());
     }
 	
 	ConstructionSite.prototype.showProgress =
