@@ -52,7 +52,7 @@ module.exports.loop = function () {
 	    var creep = Game.creeps[i];
 	    var spawn = Game.spawns.Spawn1;
 	    var noRoomInSpawn = spawn.energy == spawn.energyCapacity;
-	    if( ((creep.body == worker) || creep.name.startsWith('Worker')) )
+	    if (creep.name.startsWith('Worker'))
 	    {
 	        counters.worker++;
 	        var worker = creep;
@@ -74,8 +74,8 @@ module.exports.loop = function () {
 	       }
 	       
 	    }
-	    else
-	    if(creep.name.startsWith('Builder') )
+	    else 
+	    if (creep.name.startsWith('Builder'))
 	    {
 	       counters.builder++;
 	       var builder = creep;
@@ -106,7 +106,7 @@ module.exports.loop = function () {
 	       
 	    }
 	    else
-	    if((creep.body == worker) || creep.name.startsWith('Master') )
+	    if (creep.name.startsWith('Master'))
 	    {
 	        counters.master++;
 	        var master = creep;
