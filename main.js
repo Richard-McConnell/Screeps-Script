@@ -1,6 +1,8 @@
 module.exports.loop = function () {
     
-    var Worker = [MOVE, WORK, CARRY];
+    var Worker = [WORK, WORK, CARRY, MOVE];
+    var Builder = [WORK, WORK, MOVE, CARRY];
+    var Master = [WORK, CARRY, CARRY, MOVE];
     var workerCount = 0;
     var workerLimit = 1;
     var masterCount = 0;
@@ -144,11 +146,11 @@ module.exports.loop = function () {
     }
     if (!buildingAUnit && builderCount < builderLimit )
     {
-        var builder = Game.spawns.Spawn1.createCreep(Worker, 'Builder ' + getRandomName());
+        var builder = Game.spawns.Spawn1.createCreep(Builder, 'Builder ' + getRandomName());
     }
     if (!buildingAUnit && masterCount < masterLimit )
     {
-        Game.spawns.Spawn1.createCreep(Worker, 'Master ' + getRandomName());
+        Game.spawns.Spawn1.createCreep(Master, 'Master ' + getRandomName());
     }
 	
 	ConstructionSite.prototype.showProgress =
